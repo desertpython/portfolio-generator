@@ -1,33 +1,30 @@
+const fs = require('fs');
+
 const profileDataArgs = process.argv.slice(2, process.argv.length);
-console.log(profileDataArgs);
 
-// Notice the lack of parentheses around the `profileDataArr` parameter?
-const printProfileData = profileDataArr => {
-  for (let i = 0; i < profileDataArr.length; i += 1) {
-    console.log(profileDataArr[i]);
-  }
-};
+const [name, github] = profileDataArgs;
 
-// var is function-scoped, so changing its value in a block causes its value in the outer environment to change as well:
+const generatePage = (name, github) => {
+    return `
+    <!DOCTYPE html> 
+    <html lang="en"> 
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Portfolio Demo</title>
+    </head>
+  
+    <body>
+      <h1>${name}</h1>
+      <h2><a href="https://github.com/${github}">Github</a></h2>
+    </body>
+    </html>
+    `;
+  };
 
-var three = 'three: declared outside the block';
-
-if (true === true) {
-  three = 'three: changed inside the block'; // notice: we don't redeclare
-  console.log(three); // prints 'three: changed inside the block'
-}
-
-console.log(three); // also prints 'three: changed inside the block', because the variable has function scope. This means that the value change in the block is reflected throughout the function, i.e., outside the block.
-
-// let is block-scoped, so changing its value in a block does change its value outside the block _if_ the variable is not redeclared in the block:
-
-let four = 'four: outside the block';
-
-if (true === true) {
-  four = 'four: inside the block'; // notice: we don't redeclare the variable
-  console.log(four); // prints 'four: inside the block'
-}
-
-console.log(four); // prints 'four: inside the block', because we didn't redeclare the variable inside the block. That meant we referenced the variable outside the block, and we therefore changed it.
-
-profileDataArr.forEach(profileItem => console.log(profileItem));
+    fs.writeFile('index.html', generatePage(name, github), err => {
+    if (err) throw err;
+  
+    console.log('Portfolio complete! Check out index.html to see the output!');
+  });
